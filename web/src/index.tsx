@@ -94,6 +94,7 @@ function showCandidates(candidates) {
 }
 
 function run() {
+  console.log(import.meta.env);
   const debouncedSearchAddress = debounce(searchAddress, 350);
 
   const addressInputElement = document.getElementById(

@@ -1,8 +1,13 @@
 import { checkResponse } from "../utils";
 
+function endpointFor(path: string): string {
+  const { SNOWPACK_PUBLIC_API_HOST: host } = import.meta.env;
+  return `${host}/${path}`;
+}
+
 export function fetchAddressCandidates(address) {
   const body = { address };
-  const request = new Request(`https://mapatlapi.abrie.dev/address`, {
+  const request = new Request(endpointFor("address"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,7 +23,7 @@ export function fetchCandidate(candidate) {
     attributes: { Ref_ID },
   } = candidate;
   const body = { Ref_ID };
-  const request = new Request(`https://mapatlapi.abrie.dev/record`, {
+  const request = new Request(endpointFor("record"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +35,7 @@ export function fetchCandidate(candidate) {
 
 export function fetchRepresentative(district: number) {
   const body = { district: `District ${district}` };
-  const request = new Request(`https://mapatlapi.abrie.dev/council`, {
+  const request = new Request(endpointFor("council"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

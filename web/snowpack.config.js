@@ -11,6 +11,7 @@ module.exports = {
     "build:tsx": "esbuild --jsx-factory=h --jsx-fragment=Fragment --loader=tsx",
   },
   plugins: [
+    ["@snowpack/plugin-dotenv"],
     [
       "@snowpack/plugin-webpack",
       {
