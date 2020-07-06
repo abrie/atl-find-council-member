@@ -10,8 +10,8 @@ import (
 
 func main() {
 	query := os.Args[1]
-	addressRequest := address.Request{Address: query}
-	addressResult, err := address.SubmitRequest(&addressRequest)
+	addressSubmitter := address.ProductionSubmitter{}
+	addressResult, err := addressSubmitter.Submit(&address.Request{Address: query})
 	if err != nil {
 		log.Fatal(err)
 	}

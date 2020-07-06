@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"log"
 	"net/http"
 )
+
+type Submitter interface {
+	SubmitRequest(r *Request) (*Result, error)
+}
 
 type Request struct {
 	Address string
@@ -77,62 +79,4 @@ func BuildHttpRequest(request *Request) (*http.Request, error) {
 	req.URL.RawQuery = q.Encode()
 
 	return req, nil
-}
-
-func ParseHttpResponse(resp *http.Response) (*Result, error) {
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Response status not OK: %v", resp.Status)
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to read response body: %v", err)
-	}
-
-	var result Result
-	if err := json.Unmarshal(body, &result); err != nil {
-		return nil, fmt.Errorf("Failed unmarshal response body: %v", err)
-	}
-
-	return &result, nil
-}
-
-func SubmitRequest(request *Request) (*Result, error) {
-	httpRequest, err := BuildHttpRequest(request)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to submit request: %v", err)
-	}
-
-	client := http.Client{}
-	resp, err := client.Do(httpRequest)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	result, err := ParseHttpResponse(resp)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to get result from HTTP response: %v", err)
-	}
-
-	return result, nil
-}
-
-func NewHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		request, err := ParseRequest(r.Body)
-		if err != nil {
-			http.Error(w, "Address request failed.", http.StatusBadRequest)
-			return
-		}
-
-		result, err := SubmitRequest(request)
-		if err != nil {
-			http.Error(w, "Address request failed.", http.StatusInternalServerError)
-			return
-		}
-
-		WriteResponse(w, result)
-	}
 }
