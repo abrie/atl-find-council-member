@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-type Store struct {
-	Directory string
-	Stop      chan struct{}
-}
-
 func (store *Store) Serve(port int) {
 	handler := store.NewHandler()
 
