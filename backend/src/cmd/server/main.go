@@ -27,7 +27,7 @@ func main() {
 
 			if *testMode == true {
 				log.Println("TEST MODE")
-				store = api.NewTestStore(path.Join(*directory, "api"), stop)
+				store = api.NewTestStore(path.Join(*directory, "test-api"), stop)
 			} else {
 				store = api.NewProductionStore(path.Join(*directory, "api"), stop)
 			}
