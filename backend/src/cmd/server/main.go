@@ -13,6 +13,7 @@ import (
 
 func main() {
 	directory := flag.String("d", ".", "base data directory")
+	testMode := flag.Bool("t", false, "Test mode.")
 	flag.Parse()
 
 	var wg sync.WaitGroup
@@ -22,9 +23,14 @@ func main() {
 		func() {
 			defer wg.Done()
 
-			store := api.Store{
-				Directory: path.Join(*directory, "api"),
-				Stop:      stop}
+			var store *api.Store
+
+			if *testMode == true {
+				log.Println("TEST MODE")
+				store = api.NewTestStore(path.Join(*directory, "test-api"), stop)
+			} else {
+				store = api.NewProductionStore(path.Join(*directory, "api"), stop)
+			}
 
 			store.Serve(9400)
 		},

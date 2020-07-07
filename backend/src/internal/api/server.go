@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-type Store struct {
-	Directory string
-	Stop      chan struct{}
-}
-
 func (store *Store) Serve(port int) {
 	handler := store.NewHandler()
 
@@ -23,7 +18,7 @@ func (store *Store) Serve(port int) {
 	go func() {
 		log.Printf("MAPATLAPI serving HTTP on %s\n", addr)
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
-			log.Println("MAPATLAPI server stopped unexpectedly: %v", err)
+			log.Fatalf("MAPATLAPI server stopped unexpectedly: %v", err)
 		}
 	}()
 
@@ -34,6 +29,6 @@ func (store *Store) Serve(port int) {
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.Printf("MAPATLAPI shutdown failed: %v\n", err)
+		log.Fatalf("MAPATLAPI shutdown failed: %v\n", err)
 	}
 }

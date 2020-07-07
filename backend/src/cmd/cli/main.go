@@ -10,8 +10,8 @@ import (
 
 func main() {
 	query := os.Args[1]
-	addressRequest := address.Request{Address: query}
-	addressResult, err := address.SubmitRequest(&addressRequest)
+	addressSubmitter := address.TestSubmitter{}
+	addressResult, err := addressSubmitter.Submit(&address.Request{Address: query})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,8 @@ func main() {
 	for _, candidate := range addressResult.Candidates {
 		log.Printf("%f:%s:%d\n", candidate.Attributes.Score, candidate.Address, candidate.Attributes.Ref_ID)
 		recordRequest := record.Request{Ref_ID: candidate.Attributes.Ref_ID}
-		recordResult, err := record.SubmitRequest(&recordRequest)
+		recordSubmitter := record.TestSubmitter{}
+		recordResult, err := recordSubmitter.Submit(&recordRequest)
 		if err != nil {
 			log.Fatal(err)
 		}

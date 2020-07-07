@@ -17,8 +17,8 @@ func (store *Store) NewHandler() http.Handler {
 	r.Use(newCorsHandler())
 
 	r.Post("/council", council.NewHandler(path.Join(store.Directory, "citycouncil.json")))
-	r.Post("/address", address.NewHandler())
-	r.Post("/record", record.NewHandler())
+	r.Post("/address", address.NewHandler(store.AddressSubmitter))
+	r.Post("/record", record.NewHandler(store.RecordSubmitter))
 
 	return r
 }
