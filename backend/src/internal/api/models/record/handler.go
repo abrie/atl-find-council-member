@@ -1,4 +1,4 @@
-package address
+package record
 
 import (
 	"encoding/json"
@@ -11,13 +11,13 @@ func NewHandler(submitter Submitter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		request, err := parseRequest(r.Body)
 		if err != nil {
-			http.Error(w, "Address request failed.", http.StatusBadRequest)
+			http.Error(w, "Record request failed.", http.StatusBadRequest)
 			return
 		}
 
 		result, err := submitter.Submit(request)
 		if err != nil {
-			http.Error(w, "Address request failed.", http.StatusInternalServerError)
+			http.Error(w, "Record request failed.", http.StatusInternalServerError)
 			return
 		}
 
@@ -43,6 +43,6 @@ func writeResponse(w http.ResponseWriter, result *Result) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(body)
 	} else {
-		http.Error(w, "Failed to marshal AddressResult", http.StatusInternalServerError)
+		http.Error(w, "Failed to marshal RecordResult", http.StatusInternalServerError)
 	}
 }

@@ -1,4 +1,4 @@
-package address
+package record
 
 import (
 	"encoding/json"
@@ -6,15 +6,35 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 )
 
 type ProductionSubmitter struct{}
+
+func buildHttpRequest(request *Request) (*http.Request, error) {
+	data := url.Values{}
+	data.Add("wsparam[]", strconv.Itoa(request.Ref_ID))
+	encodedData := data.Encode()
+
+	url := `http://egis.atlantaga.gov/app/home/php/egisws.php`
+	req, err := http.NewRequest("POST", url, strings.NewReader(encodedData))
+	if err != nil {
+		return nil, fmt.Errorf("Failed to build HTTP request: %v", err)
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("Content-Length", strconv.Itoa(len(encodedData)))
+
+	return req, nil
+}
 
 func parseHttpResponse(resp *http.Response) (*Result, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("Response status not OK: %v", resp.Status)
+		log.Fatalf("Response not OK: %v", resp.StatusCode)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
@@ -22,7 +42,7 @@ func parseHttpResponse(resp *http.Response) (*Result, error) {
 		return nil, fmt.Errorf("Failed to read response body: %v", err)
 	}
 
-	var result Result
+	result := make(Result, 0)
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, fmt.Errorf("Failed unmarshal response body: %v", err)
 	}
@@ -30,34 +50,14 @@ func parseHttpResponse(resp *http.Response) (*Result, error) {
 	return &result, nil
 }
 
-func buildHttpRequest(request *Request) (*http.Request, error) {
-	url := "https://egis.atlantaga.gov/arc/rest/services/WebLocators/TrAddrPointS/GeocodeServer/findAddressCandidates"
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("Failed to build HTTP Request: %v", err)
-	}
-
-	q := req.URL.Query()
-	q.Add("Single Line Input", request.Address)
-	q.Add("f", "json")
-	q.Add("outFields", "*")
-	q.Add("outSR", `{"wkid":4326}`)
-	q.Add("maxLocations", "6")
-
-	req.URL.RawQuery = q.Encode()
-
-	return req, nil
-}
-
 func (p ProductionSubmitter) Submit(request *Request) (*Result, error) {
-	httpRequest, err := buildHttpRequest(request)
+	req, err := buildHttpRequest(request)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to submit request: %v", err)
 	}
 
 	client := http.Client{}
-	resp, err := client.Do(httpRequest)
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
