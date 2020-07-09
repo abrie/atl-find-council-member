@@ -8,12 +8,14 @@ import (
 	"path"
 
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 )
 
 func (store *Store) NewHandler() http.Handler {
 	r := chi.NewRouter()
 
+	r.Use(middleware.Logger)
 	r.Use(newCorsHandler())
 
 	r.Post("/council", council.NewHandler(path.Join(store.Directory, "citycouncil.json")))
