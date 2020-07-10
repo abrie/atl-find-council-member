@@ -11,8 +11,7 @@ type Request struct {
 }
 
 type Record struct {
-	COUNCIL_DIST   string
-	COUNCIL_MEMBER string
+	COUNCIL_DIST string
 }
 
 type Result []Record
