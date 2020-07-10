@@ -15,12 +15,20 @@ type Request struct {
 	District string
 }
 
+type Contact struct {
+	Office      []string `json="office"`
+	Phone       []string `json="phone"`
+	Fax         []string `json="fax"`
+	Email       []string `json="email"`
+	Commmittees []string `json="committees"`
+}
+
 type Result struct {
-	Href     string `json="href"`
-	District string `json="district"`
-	Name     string `json="name"`
-	Image    string `json="image"`
-	Contact  string `json="contact"`
+	Href     string  `json="href"`
+	District string  `json="district"`
+	Name     string  `json="name"`
+	Image    string  `json="image"`
+	Contact  Contact `json="contact"`
 }
 
 type Data map[string]Result
@@ -64,7 +72,7 @@ func NewData(datapath string) (*Data, error) {
 	list := make([]Result, 0)
 
 	if err = json.Unmarshal(file, &list); err != nil {
-		log.Fatal("Failed to unmarshal council data file.")
+		log.Fatalf("Failed to unmarshal council data file: %v", err)
 	}
 
 	result := make(Data)
