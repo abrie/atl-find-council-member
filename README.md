@@ -1,8 +1,8 @@
-# Atlanta City Council Districts
+# Atlanta City Council Member Finder
 
 An app to quickly find an Atlanta city council representative.
 
-[Use it!](https://abrie.github.io/atl-find-council-member)
+[Hosted Here](https://abrie.github.io/atl-find-council-member)
 
 ## Technical Overview
 
@@ -16,34 +16,34 @@ This app multiplexes two official Atlanta government sites into one:
 There are three components:
 
 - [/web](web), javascript web interface.
-- [/backend](backend), wraps the the egis AP and serves scraped council data.
 - [/scraper](scraper), gleans information from the city council web site.
+- [/backend](backend), wraps the the Egis API and serves scraped council data.
 
 ## For Developers
 
-### Frontend development:
-
-The app uses Typescript, Tailwind CSS, JSX, and Snowpack.
-
 1. Fork this repo: [click here](https://github.com/abrie/atl-find-council-member/fork)
 2. Clone the fork onto your development machine.
-3. Change to front end's folder: `cd web`
-4. Install dependencies: `yarn install`
-5. Start the devserver: `yarn start`
 
-To contribute changes:
+### Frontend development:
 
-1. Add this repo as a remote: `git remote add upstream https://github.com/abrie/atl-find-council-member`
-2. Follow the [Github guide for syncing and merging](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/working-with-forks) to make a PR.
+The frontend uses Typescript, Tailwind CSS, JSX, and Snowpack.
+
+1. Change to front end's folder: `cd web`
+2. Install dependencies: `yarn install`
+3. Start the devserver: `yarn start`
 
 ### Backend development:
 
-The backend uses Go and the Chi router framework.
+The backend uses Go and the Chi router framework, packaged into a docker container.
 
-_(todo)_
+1. `cd backend`
+2. `make all`
+3. `./bin/cli` to run queries programatically, or
+4. `./bin/server -d data` to run queries through the api.
 
 ### Scraper development:
 
-The scraper uses Python3 with Beautifulsoup.
-
-_(todo)_
+1. `cd scraper`
+2. `source .bin/activate` to initialize Python3 virtual env.
+3. `pip install -r requirements.txt` to install dependencies.
+4. `python3 main.py` to scrape the city council website.
