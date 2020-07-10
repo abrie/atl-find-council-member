@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"backend/internal/api/logger"
 )
 
 type Request struct {
@@ -80,6 +82,7 @@ func NewHandler(datapath string) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger.DumpRequest(r)
 		request, err := ParseRequest(r.Body)
 		if err != nil {
 			http.Error(w, "Council request failed.", http.StatusBadRequest)

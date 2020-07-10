@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"backend/internal/api/logger"
 )
 
 func NewHandler(submitter Submitter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger.DumpRequest(r)
 		request, err := parseRequest(r.Body)
 		if err != nil {
 			http.Error(w, "Address request failed.", http.StatusBadRequest)
