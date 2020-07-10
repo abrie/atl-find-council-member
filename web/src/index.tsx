@@ -73,20 +73,15 @@ async function selectCandidate(candidate) {
   showRepresentativeCard(buildRepresentativeCard(representative));
 }
 
-function highlight(sub, full) {
-  return (
-    <span className="cursor-pointer truncate">
-      <span className="text-gray-600 hover:text-black">{full}</span>
-    </span>
-  );
-}
-
 function buildCandidateList(address, candidates) {
   return (
     <div>
       {candidates.map((candidate) => (
-        <div onclick={() => selectCandidate(candidate)}>
-          {highlight(address, candidate.address)}
+        <div
+          className="cursor-pointer truncate text-gray-600 hover:text-black"
+          onclick={() => selectCandidate(candidate)}
+        >
+          {candidate.address}
         </div>
       ))}
     </div>
