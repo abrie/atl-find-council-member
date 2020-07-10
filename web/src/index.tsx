@@ -73,6 +73,11 @@ async function selectCandidate(candidate) {
   showRepresentativeCard(buildRepresentativeCard(representative));
 }
 
+function clearSelectedCandidate() {
+  const profile = document.getElementById("selected-candidate");
+  clearElement(profile);
+}
+
 function buildCandidateList(address, candidates) {
   return (
     <div>
@@ -102,6 +107,7 @@ function run() {
   ) as HTMLInputElement;
 
   addressInputElement.addEventListener("input", async (evt) => {
+    clearSelectedCandidate();
     const { value } = evt.currentTarget as HTMLInputElement;
     const candidates = await debouncedSearchAddress(value);
     showCandidateList(buildCandidateList(value, candidates));
