@@ -44,6 +44,7 @@ The backend uses Go and the Chi router framework, packaged into a docker contain
 ### Scraper development:
 
 1. `cd scraper`
-2. `source .bin/activate` to initialize Python3 virtual env.
-3. `pip install -r requirements.txt` to install dependencies.
-4. `python3 main.py` to scrape the city council website.
+2. `python3 -m venv ./venv` to create a Python3 virtual env.
+3. `source ./venv/bin/activate` to load the virtual env.
+4. `pip install -r requirements.txt` to install dependencies.
+5. `python3 main.py` to scrape the city council website and save as `citycouncil.json`.
