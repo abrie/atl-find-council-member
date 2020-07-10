@@ -26,6 +26,10 @@ async function getRepresentative(district: number) {
     .then((resp) => resp.json());
 }
 
+async function getNPU(npu: string) {
+  return Promise.resolve(npu);
+}
+
 function buildRepresentativeCard(representative) {
   return (
     <div className="py-3 flex justify-between">
@@ -47,20 +51,36 @@ function buildRepresentativeCard(representative) {
   );
 }
 
+function buildNPUCard(npu) {
+  return (
+    <div className="py-3 flex justify-between">
+      <div classname="w-full flex items-center justify-left">
+        Neighborhood Planning Unit: {npu}
+      </div>
+    </div>
+  );
+}
+
 function clearAddressInput() {
   const input = document.getElementById("address-input") as HTMLInputElement;
   input.value = "";
 }
 
 function clearCandidateList() {
-  const list = document.getElementById("candidates");
-  clearElement(list);
+  const el = document.getElementById("candidates");
+  clearElement(el);
 }
 
 function showRepresentativeCard(card) {
-  const profile = document.getElementById("selected-candidate");
-  clearElement(profile);
-  profile.appendChild(card);
+  const el = document.getElementById("selected-candidate");
+  clearElement(el);
+  el.appendChild(card);
+}
+
+function showNPUCard(card) {
+  const el = document.getElementById("selected-npu");
+  clearElement(el);
+  el.appendChild(card);
 }
 
 async function selectCandidate(candidate) {
@@ -71,11 +91,19 @@ async function selectCandidate(candidate) {
 
   const representative = await getRepresentative(record.COUNCIL_DIST);
   showRepresentativeCard(buildRepresentativeCard(representative));
+
+  const npu = await getNPU(record.NPU_NAME);
+  showNPUCard(buildNPUCard(npu));
 }
 
 function clearSelectedCandidate() {
-  const profile = document.getElementById("selected-candidate");
-  clearElement(profile);
+  const el = document.getElementById("selected-candidate");
+  clearElement(el);
+}
+
+function clearSelectedNPU() {
+  const el = document.getElementById("selected-npu");
+  clearElement(el);
 }
 
 function buildCandidateList(address, candidates) {
@@ -108,6 +136,7 @@ function run() {
 
   addressInputElement.addEventListener("input", async (evt) => {
     clearSelectedCandidate();
+    clearSelectedNPU();
     const { value } = evt.currentTarget as HTMLInputElement;
     const candidates = await debouncedSearchAddress(value);
     showCandidateList(buildCandidateList(value, candidates));

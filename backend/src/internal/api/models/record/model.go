@@ -12,6 +12,7 @@ type Request struct {
 
 type Record struct {
 	COUNCIL_DIST string
+	NPU_NAME     string
 }
 
 type Result []Record
