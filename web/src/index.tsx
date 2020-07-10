@@ -1,4 +1,4 @@
-import debounce from "lodash.debounce";
+import debounce from "awesome-debounce-promise";
 import h from "hyperscript";
 import { checkResponse, clearElement } from "./utils";
 import {
@@ -70,40 +70,46 @@ async function selectCandidate(candidate) {
   clearCandidateList();
 
   const representative = await getRepresentative(record.COUNCIL_DIST);
-  const card = buildRepresentativeCard(representative);
-
-  showRepresentativeCard(card);
+  showRepresentativeCard(buildRepresentativeCard(representative));
 }
 
-function showCandidates(candidates) {
+function highlight(sub, full) {
+  return (
+    <span className="cursor-pointer truncate">
+      <span className="text-gray-600 hover:text-black">{full}</span>
+    </span>
+  );
+}
+
+function buildCandidateList(address, candidates) {
+  return (
+    <div>
+      {candidates.map((candidate) => (
+        <div onclick={() => selectCandidate(candidate)}>
+          {highlight(address, candidate.address)}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function showCandidateList(el) {
   const list = document.getElementById("candidates");
   clearElement(list);
-
-  if (candidates) {
-    const elements = candidates.map((candidate) => (
-      <div
-        className="cursor-pointer text-gray-600 hover:text-gray-700 truncate"
-        onclick={() => selectCandidate(candidate)}
-      >
-        {candidate.address}
-      </div>
-    ));
-
-    elements.forEach((el) => list.appendChild(el));
-  }
+  list.appendChild(el);
 }
 
 function run() {
-  const debouncedSearchAddress = debounce(searchAddress, 350);
+  const debouncedSearchAddress = debounce(searchAddress, 250);
 
   const addressInputElement = document.getElementById(
     "address-input"
   ) as HTMLInputElement;
 
   addressInputElement.addEventListener("input", async (evt) => {
-    const target = evt.currentTarget as HTMLInputElement;
-    const candidates = await debouncedSearchAddress(target.value);
-    showCandidates(candidates);
+    const { value } = evt.currentTarget as HTMLInputElement;
+    const candidates = await debouncedSearchAddress(value);
+    showCandidateList(buildCandidateList(value, candidates));
   });
 }
 
