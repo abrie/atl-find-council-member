@@ -29,25 +29,21 @@ def buildContact(strings):
     for string in strings:
         if string in result:
             current = result[string]
-            print(string, current)
         elif current != False:
             current.append(string)
 
-    return result
+    fromto_mapping = {"Office Location":"office","P":"phone","F":"fax","E":"email","Committee Assignments":"committees"}
+    return {fromto_mapping.get(k, k): v for k, v in result.items() if k in fromto_mapping}
 
-def parseContact(html):
-    soup = BeautifulSoup(html, 'html.parser')
-    p = soup.find("p")
-    if p :
-        strings = [string for string in soup.strings]
+def parseContact(p):
+        strings = [string for string in p.strings]
         strings = [string.replace(':','') for string in strings]
         strings = [string.strip() for string in strings]
         strings = list(filter(lambda string: string != '', strings))
         return buildContact(strings)
-    else:
-        return {}
 
 def getCouncilMember(href):
+    print(href)
     r = requests.get(href)
     if r.status_code != 200:
         return {'href': href, 'error': r.status_code}
@@ -58,15 +54,15 @@ def getCouncilMember(href):
     image = soup.find("aside").find(
         "div", ["image_widget"]).find("img")["src"]
 
-    contact = soup.find("aside").find("div", ["content_area"]).contents[0]
-    contact = parseContact(toText(contact))
+    contact = soup.find("aside").find("div", ["content_area"])
+    contact = parseContact(contact)
 
     return {'href': href, 'name': name, 'district': district, 'image': image, 'contact': contact}
 
 
 def run():
     members = [getCouncilMember(href) for href in getAllCouncilMembers()]
-    with open('citycouncil.json', 'w', encoding='utf8') as json_file:
+    with open('data/citycouncil.json', 'w', encoding='utf8') as json_file:
         json.dump(members, json_file, ensure_ascii=False)
 
 
