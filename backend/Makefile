@@ -38,7 +38,7 @@ watch-test: test
 	@fswatch -l 0.5 -o $(SRC_DIR) -e ".*" -i "\\.go$$" | xargs -n1 -I{} make test
 
 start: kill build
-	@$(BIN_DIR)/$(BIN_NAME) -d $(DATA_DIR) & echo $$! > $(PID)
+	@$(BIN_DIR)/$(SERVER_BIN_NAME) -d $(DATA_DIR) & echo $$! > $(PID)
 
 restart: notify start
 
