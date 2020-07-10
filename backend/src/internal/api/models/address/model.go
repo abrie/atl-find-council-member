@@ -12,6 +12,7 @@ type Request struct {
 
 type Result struct {
 	Candidates []Candidate `json:"candidates"`
+	Error      *Error      `json:"error,omitempty"`
 }
 
 type Address string
@@ -32,4 +33,9 @@ type Candidate struct {
 	Address    Address    `json:"address"`
 	Location   Location   `json:"location"`
 	Attributes Attributes `json:"attributes"`
+}
+
+type Error struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }

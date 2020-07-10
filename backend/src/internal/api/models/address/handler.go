@@ -18,6 +18,11 @@ func NewHandler(submitter Submitter) http.HandlerFunc {
 			return
 		}
 
+		if request.Address == "" {
+			writeResponse(w, &Result{Candidates: []Candidate{}})
+			return
+		}
+
 		result, err := submitter.Submit(request)
 		if err != nil {
 			http.Error(w, "Address request failed.", http.StatusInternalServerError)
