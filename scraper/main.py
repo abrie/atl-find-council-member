@@ -23,6 +23,30 @@ def toText(tag):
     return string.replace("\n", '').replace("\r", '')
 
 
+def buildContact(strings):
+    result = {"Office Location":[],"P":[],"F":[],"E":[],"Committee Assignments":[]}
+    current = False
+    for string in strings:
+        if string in result:
+            current = result[string]
+            print(string, current)
+        elif current != False:
+            current.append(string)
+
+    return result
+
+def parseContact(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    p = soup.find("p")
+    if p :
+        strings = [string for string in soup.strings]
+        strings = [string.replace(':','') for string in strings]
+        strings = [string.strip() for string in strings]
+        strings = list(filter(lambda string: string != '', strings))
+        return buildContact(strings)
+    else:
+        return {}
+
 def getCouncilMember(href):
     r = requests.get(href)
     if r.status_code != 200:
@@ -35,7 +59,7 @@ def getCouncilMember(href):
         "div", ["image_widget"]).find("img")["src"]
 
     contact = soup.find("aside").find("div", ["content_area"]).contents[0]
-    contact = toText(contact)
+    contact = parseContact(toText(contact))
 
     return {'href': href, 'name': name, 'district': district, 'image': image, 'contact': contact}
 
