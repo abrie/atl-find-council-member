@@ -2,11 +2,14 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import sys
+import itertools
 
 
 def getAllCouncilMembers():
-    r = requests.get("https://citycouncil.atlantaga.gov")
+    url = "https://citycouncil.atlantaga.gov"
+    r = requests.get(url)
     if r.status_code != 200:
+        print("Failed to contact", url, r.status_code)
         sys.exit(-1)
 
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -32,10 +35,18 @@ def buildContact(strings):
 
 def parseContact(p):
         strings = [string for string in p.strings]
-        strings = [string.replace(':','') for string in strings]
+        strings = [string.split(":") for string in strings]
+        strings = list(itertools.chain(*strings))
         strings = [string.strip() for string in strings]
         strings = list(filter(lambda string: string != '', strings))
         return buildContact(strings)
+
+def extractEmail(p):
+        mailtos = [a["href"] for a in p.select('a[href^="mailto:"]')]
+        emails = [a.replace("mailto:","") for a in mailtos]
+        emails = [email.strip() for email in emails]
+        emails = list(dict.fromkeys(emails))
+        return emails
 
 def getCouncilMember(href):
     print(href)
@@ -49,16 +60,17 @@ def getCouncilMember(href):
     image = soup.find("aside").find(
         "div", ["image_widget"]).find("img")["src"]
 
-    contact = soup.find("aside").find("div", ["content_area"])
-    contact = parseContact(contact)
+    contactEl = soup.find("aside").find("div", ["content_area"])
+    contact = parseContact(contactEl)
+    contact["email"] = extractEmail(contactEl)
 
     return {'href': href, 'name': name, 'district': district, 'image': image, 'contact': contact}
 
 
 def run():
+    print("Scraping...")
     members = [getCouncilMember(href) for href in getAllCouncilMembers()]
     with open('data/citycouncil.json', 'w', encoding='utf8') as json_file:
         json.dump(members, json_file, ensure_ascii=False)
-
 
 run()
