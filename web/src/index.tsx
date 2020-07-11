@@ -30,25 +30,96 @@ async function getNPU(npu: string) {
   return Promise.resolve(npu);
 }
 
+function tel(str) {
+  const numbers = str.replace(/\D/g, "");
+  return `tel:+1${numbers}`;
+}
+
+function mailto(str) {
+  return `mailto:${str}`;
+}
+
 function buildRepresentativeCard(representative) {
+  console.log(representative);
   return (
-    <div className="py-3 flex justify-between">
-      <div className="w-1/3 flex items-center justify-left">
-        <div className="text-xl">{representative.District}</div>
+    <div className="py-3 flex flex-col">
+      <div className="pl-3 bg-green-200 text-xl">
+        City Council {representative.district}
       </div>
-      <div className="w-1/3 flex items-center justify-center">
-        <a className="text-xl" href={representative.Href}>
-          {representative.Name}
-        </a>
-      </div>
-      <div className="w-1/3 flex items-center justify-end">
-        <img
-          className="w-24"
-          src={`https://citycouncil.atlantaga.gov${representative.Image}`}
-        />
+
+      <div className="p-5 border-2 border-green-200 bg-green-100 w-full flex justify-between items-start">
+        <div className="flex flex-col items-center">
+          <div className="">
+            <img
+              className="w-24"
+              src={`https://citycouncil.atlantaga.gov${representative.image}`}
+            />
+          </div>
+          <div className="text-md">
+            <a href={representative.href}>{representative.name}</a>
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="text-sm">
+            {representative.contact.office.map((line) => (
+              <div>{line}</div>
+            ))}
+          </div>
+          <div className="text-sm">
+            {representative.contact.phone.map((line) => (
+              <div>
+                Phone: <a href={tel(line)}>{line}</a>
+              </div>
+            ))}
+          </div>
+          <div className="text-sm">
+            {representative.contact.fax.map((line) => (
+              <div>
+                Fax: <a href={tel(line)}>{line}</a>
+              </div>
+            ))}
+          </div>
+          <div className="text-sm">
+            {representative.contact.email.map((line) => (
+              <div>
+                Email: <a href={mailto(line)}>{line}</a>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
+
+  /*
+        <div className="w-1/2 flex flex-col items-center justify-center">
+          <div>
+            <a className="text-xl" href={representative.Href}>
+              {representative.Name}
+            </a>
+          </div>
+      </div>
+      <div className="flex justify-between">
+        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
+          {representative.Contact.Office.map((line) => (
+            <div>{line}</div>
+          ))}
+        </div>
+        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
+          <div>Phone: {representative.Contact.Phone[0]}</div>
+          <div>Fax: {representative.Contact.Fax[0]}</div>
+          <div>Email: {representative.Contact.Email[0]}</div>
+        </div>
+        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
+          {representative.Contact.Committees.map((line) => (
+            <div>{line}</div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+     */
 }
 
 function buildNPUCard(npu) {
