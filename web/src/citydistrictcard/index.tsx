@@ -17,14 +17,14 @@ export default function buildCityDistrictCard(representative) {
       </div>
 
       <div className="p-5 border-2 border-green-200 bg-green-100 w-full flex justify-around items-center">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mr-5">
           <div className="">
             <img
               className="w-24"
               src={`https://citycouncil.atlantaga.gov${representative.image}`}
             />
           </div>
-          <div className="text-md">
+          <div className="text-md text-center">
             <a className="text-blue-500 underline" href={representative.href}>
               {representative.name}
             </a>
