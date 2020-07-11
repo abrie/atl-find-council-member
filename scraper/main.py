@@ -18,11 +18,6 @@ def getAllCouncilMembers():
     return hrefs
 
 
-def toText(tag):
-    string = str(tag)
-    return string.replace("\n", '').replace("\r", '')
-
-
 def buildContact(strings):
     result = {"Office Location":[],"P":[],"F":[],"E":[],"Committee Assignments":[]}
     current = False
