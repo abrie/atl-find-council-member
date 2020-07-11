@@ -29,8 +29,6 @@ class Fetcher:
         with open(path, "w+") as f:
             f.write(json.dumps(self.pages))
 
-fetcher = Fetcher()
-
 def getAllCouncilMembers():
     url = "https://citycouncil.atlantaga.gov"
     text, status_code = fetcher.fetch(url)
@@ -48,26 +46,39 @@ def getAllCouncilMembers():
 
 
 def buildContact(strings):
-    sections = {"Office Location":[],"P":[],"F":[],"E":[],"Committee Assignments":[]}
+    sections = {"Office Location":[],
+                "P":[],
+                "F":[],
+                "E":[],
+                "Committee Assignments":[]}
+
     section = None
+
     for string in strings:
         if string in sections:
             section = sections[string]
         elif section != None:
             section.append(string)
 
-    remapping = {"Office Location":"office","P":"phone","F":"fax","E":"email","Committee Assignments":"committees"}
-    return {remapping.get(k, k): v for k, v in sections.items() if k in remapping}
+    remapping = {"Office Location":"office",
+                 "P":"phone",
+                 "F":"fax",
+                 "E":"email",
+                 "Committee Assignments":"committees"}
 
-def parseContact(p):
+    remapped = {remapping.get(k, k): v for k, v in sections.items() if k in remapping}
+
+    return remapped
+
+def extractStrings(p):
         strings = [string for string in p.strings]
         strings = [string.split(":") for string in strings]
         strings = list(itertools.chain(*strings))
         strings = [string.strip() for string in strings]
         strings = list(filter(lambda string: string != '', strings))
-        return buildContact(strings)
+        return strings
 
-def extractEmail(p):
+def extractEmails(p):
         mailtos = [a["href"] for a in p.select('a[href^="mailto:"]')]
         emails = [a.replace("mailto:","") for a in mailtos]
         emails = [email.strip() for email in emails]
@@ -82,26 +93,25 @@ def getCouncilMember(href):
     soup = BeautifulSoup(text, 'html.parser')
     name = soup.find("h1", ["titlewidget-title"]).find("span").contents[0]
     district = soup.find("h2", ["titlewidget-subtitle"]).contents[0]
-    image = soup.find("aside").find(
-        "div", ["image_widget"]).find("img")["src"]
+    aside = soup.find("aside")
+    image = aside.find("div", ["image_widget"]).find("img")["src"]
+    content = aside.find("div", ["content_area"])
+    contact = buildContact(extractStrings(content))
+    contact["email"] = extractEmails(content)
 
-    contactEl = soup.find("aside").find("div", ["content_area"])
-    contact = parseContact(contactEl)
-    contact["email"] = extractEmail(contactEl)
-
-    return {'href': href, 'name': name, 'district': district, 'image': image, 'contact': contact}
-
+    return {'href': href,
+            'name': name,
+            'district': district,
+            'image': image,
+            'contact': contact}
 
 def run():
-    print("Scraping...")
-
-    fetcher.use("data/html.json")
-
     members = [getCouncilMember(href) for href in getAllCouncilMembers()]
 
     with open('data/citycouncil.json', 'w', encoding='utf8') as json_file:
         json.dump(members, json_file, ensure_ascii=False)
 
-    fetcher.save("data/html.json")
-
+fetcher = Fetcher()
+#fetcher.use("data/html.json")
 run()
+fetcher.save("data/html.json")
