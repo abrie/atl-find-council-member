@@ -4,15 +4,41 @@ import json
 import sys
 import itertools
 
+class Fetcher:
+    def __init__(self):
+        self.use_cached = False
+        self.pages = {}
+
+    def fetch(self, url):
+        if self.use_cached:
+            print("Use cached url:", url)
+            cached = self.pages[url]
+            return cached["text"], cached["status"]
+        else:
+            print("Fetching url:", url)
+            r = requests.get(url)
+            self.pages[url] = {"text":r.text, "status":r.status_code}
+            return r.text, r.status_code
+
+    def use(self, path):
+        with open(path, "r") as f:
+            self.pages = json.loads(f.read())
+            self.use_cached = True
+
+    def save(self, path):
+        with open(path, "w+") as f:
+            f.write(json.dumps(self.pages))
+
+fetcher = Fetcher()
 
 def getAllCouncilMembers():
     url = "https://citycouncil.atlantaga.gov"
-    r = requests.get(url)
-    if r.status_code != 200:
+    text, status_code = fetcher.fetch(url)
+    if status_code != 200:
         print("Failed to contact", url, r.status_code)
         sys.exit(-1)
 
-    soup = BeautifulSoup(r.text, 'html.parser')
+    soup = BeautifulSoup(text, 'html.parser')
     tab = soup.find(id="ColumnUserControl2")
     nav = tab.find("nav")
     ul = nav.find("ul")
@@ -49,12 +75,11 @@ def extractEmail(p):
         return emails
 
 def getCouncilMember(href):
-    print(href)
-    r = requests.get(href)
-    if r.status_code != 200:
+    text, status_code = fetcher.fetch(href)
+    if status_code != 200:
         return {'href': href, 'error': r.status_code}
 
-    soup = BeautifulSoup(r.text, 'html.parser')
+    soup = BeautifulSoup(text, 'html.parser')
     name = soup.find("h1", ["titlewidget-title"]).find("span").contents[0]
     district = soup.find("h2", ["titlewidget-subtitle"]).contents[0]
     image = soup.find("aside").find(
@@ -69,8 +94,14 @@ def getCouncilMember(href):
 
 def run():
     print("Scraping...")
+
+    fetcher.use("data/html.json")
+
     members = [getCouncilMember(href) for href in getAllCouncilMembers()]
+
     with open('data/citycouncil.json', 'w', encoding='utf8') as json_file:
         json.dump(members, json_file, ensure_ascii=False)
+
+    fetcher.save("data/html.json")
 
 run()
