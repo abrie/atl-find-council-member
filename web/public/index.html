@@ -11,13 +11,13 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <section class="grid grid-cols-1 max-w-xl mx-auto">
-      <div class="p-5 bg-green-300 text-center text-gray-800 text-xl">
+    <main class="grid grid-cols-1 max-w-xl mx-auto">
+      <header class="p-5 bg-green-300 text-center text-gray-800 text-xl">
         Atlanta City Council Member Finder
-      </div>
+      </header>
 
-      <div class="p-5 pb-1">
-        <div class="w-11/12 pt-2 relative mx-auto text-gray-600 pb-2">
+      <section class="pt-5 pb-1">
+        <div class="p-2 relative mx-auto text-gray-600">
           <input
             class="w-full border-2 border-gray-400 bg-white h-10 px-5 pl-8 rounded-lg text-lg focus:outline-none"
             type="search"
@@ -26,7 +26,7 @@
             placeholder="123 Peachtree St, Atlanta GA"
           />
 
-          <button type="submit" class="absolute left-0 top-0 mt-5 ml-2">
+          <button type="submit" class="absolute left-0 top-0 mt-5 ml-4">
             <svg
               class="text-gray-300 h-4 w-4 fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -52,8 +52,8 @@
       <div style="display: none;" id="map"></div>
 
       <div class="px-10" id="candidates"></div>
-      <div class="px-10" id="selected-candidate"></div>
-      <div class="px-10" id="selected-npu"></div>
+      <div class="px-5" id="selected-candidate"></div>
+      <div class="px-5" id="selected-npu"></div>
 
       <hr />
       <div class="text-sm text-center p-2 text-gray-400">
