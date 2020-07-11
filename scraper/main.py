@@ -48,16 +48,16 @@ def getAllCouncilMembers():
 
 
 def buildContact(strings):
-    result = {"Office Location":[],"P":[],"F":[],"E":[],"Committee Assignments":[]}
-    current = False
+    sections = {"Office Location":[],"P":[],"F":[],"E":[],"Committee Assignments":[]}
+    section = None
     for string in strings:
-        if string in result:
-            current = result[string]
-        elif current != False:
-            current.append(string)
+        if string in sections:
+            section = sections[string]
+        elif section != None:
+            section.append(string)
 
-    fromto_mapping = {"Office Location":"office","P":"phone","F":"fax","E":"email","Committee Assignments":"committees"}
-    return {fromto_mapping.get(k, k): v for k, v in result.items() if k in fromto_mapping}
+    remapping = {"Office Location":"office","P":"phone","F":"fax","E":"email","Committee Assignments":"committees"}
+    return {remapping.get(k, k): v for k, v in sections.items() if k in remapping}
 
 def parseContact(p):
         strings = [string for string in p.strings]
