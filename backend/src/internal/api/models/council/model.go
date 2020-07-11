@@ -16,19 +16,19 @@ type Request struct {
 }
 
 type Contact struct {
-	Office      []string `json="office"`
-	Phone       []string `json="phone"`
-	Fax         []string `json="fax"`
-	Email       []string `json="email"`
-	Commmittees []string `json="committees"`
+	Office     []string `json:"office"`
+	Phone      []string `json:"phone"`
+	Fax        []string `json:"fax"`
+	Email      []string `json:"email"`
+	Committees []string `json:"committees"`
 }
 
 type Result struct {
-	Href     string  `json="href"`
-	District string  `json="district"`
-	Name     string  `json="name"`
-	Image    string  `json="image"`
-	Contact  Contact `json="contact"`
+	Href     string  `json:"href"`
+	District string  `json:"district"`
+	Name     string  `json:"name"`
+	Image    string  `json:"image"`
+	Contact  Contact `json:"contact"`
 }
 
 type Data map[string]Result
@@ -55,7 +55,7 @@ func WriteResponse(w http.ResponseWriter, result *Result) {
 	}
 }
 
-func (data *Data) ProcessRequest(request *Request) (*Result, error) {
+func (data *Data) Submit(request *Request) (*Result, error) {
 	if result, ok := (*data)[request.District]; ok {
 		return &result, nil
 	}
@@ -97,7 +97,7 @@ func NewHandler(datapath string) http.HandlerFunc {
 			return
 		}
 
-		result, err := data.ProcessRequest(request)
+		result, err := data.Submit(request)
 		if err != nil {
 			http.Error(w, "Council request failed.", http.StatusInternalServerError)
 			return
