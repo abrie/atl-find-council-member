@@ -40,14 +40,13 @@ function mailto(str) {
 }
 
 function buildRepresentativeCard(representative) {
-  console.log(representative);
   return (
     <div className="py-3 flex flex-col">
       <div className="pl-3 bg-green-200 text-xl">
         City Council {representative.district}
       </div>
 
-      <div className="p-5 border-2 border-green-200 bg-green-100 w-full flex justify-between items-start">
+      <div className="p-5 border-2 border-green-200 bg-green-100 w-full flex justify-between items-center">
         <div className="flex flex-col items-center">
           <div className="">
             <img
@@ -63,7 +62,7 @@ function buildRepresentativeCard(representative) {
         </div>
 
         <div className="flex flex-col">
-          <div className="text-sm">
+          <div className="mb-2 text-sm">
             {representative.contact.office.map((line) => (
               <div>{line}</div>
             ))}
@@ -102,35 +101,6 @@ function buildRepresentativeCard(representative) {
       </div>
     </div>
   );
-
-  /*
-        <div className="w-1/2 flex flex-col items-center justify-center">
-          <div>
-            <a className="text-xl" href={representative.Href}>
-              {representative.Name}
-            </a>
-          </div>
-      </div>
-      <div className="flex justify-between">
-        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
-          {representative.Contact.Office.map((line) => (
-            <div>{line}</div>
-          ))}
-        </div>
-        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
-          <div>Phone: {representative.Contact.Phone[0]}</div>
-          <div>Fax: {representative.Contact.Fax[0]}</div>
-          <div>Email: {representative.Contact.Email[0]}</div>
-        </div>
-        <div className="w-1/3 flex flex-col text-sm items-left justify-end">
-          {representative.Contact.Committees.map((line) => (
-            <div>{line}</div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-     */
 }
 
 function buildNPUCard(npu) {
