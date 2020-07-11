@@ -56,7 +56,9 @@ function buildRepresentativeCard(representative) {
             />
           </div>
           <div className="text-md">
-            <a href={representative.href}>{representative.name}</a>
+            <a className="text-blue-500 underline" href={representative.href}>
+              {representative.name}
+            </a>
           </div>
         </div>
 
@@ -69,21 +71,30 @@ function buildRepresentativeCard(representative) {
           <div className="text-sm">
             {representative.contact.phone.map((line) => (
               <div>
-                Phone: <a href={tel(line)}>{line}</a>
+                Phone:{" "}
+                <a className="text-blue-500 underline" href={tel(line)}>
+                  {line}
+                </a>
               </div>
             ))}
           </div>
           <div className="text-sm">
             {representative.contact.fax.map((line) => (
               <div>
-                Fax: <a href={tel(line)}>{line}</a>
+                Fax:{" "}
+                <a className="text-blue-500 underline" href={tel(line)}>
+                  {line}
+                </a>
               </div>
             ))}
           </div>
           <div className="text-sm">
             {representative.contact.email.map((line) => (
               <div>
-                Email: <a href={mailto(line)}>{line}</a>
+                Email:{" "}
+                <a className="text-blue-500 underline" href={mailto(line)}>
+                  {line}
+                </a>
               </div>
             ))}
           </div>
