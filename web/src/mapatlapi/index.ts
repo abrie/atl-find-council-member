@@ -5,7 +5,7 @@ function endpointFor(path: string): string {
   return `${host}/${path}`;
 }
 
-export function fetchAddressCandidates(address) {
+function fetchAddressCandidates(address) {
   const body = { address };
   const request = new Request(endpointFor("address"), {
     method: "POST",
@@ -18,7 +18,26 @@ export function fetchAddressCandidates(address) {
   return fetch(request);
 }
 
-export function fetchCandidate(candidate) {
+export async function searchAddress(address) {
+  return fetchAddressCandidates(address)
+    .then((resp) => checkResponse(resp))
+    .then((resp) => resp.json())
+    .then(({ candidates }) => candidates);
+}
+
+export async function getRecord(candidate) {
+  return fetchCandidate(candidate)
+    .then((resp) => checkResponse(resp))
+    .then((resp) => resp.json());
+}
+
+export async function getRepresentative(district: number) {
+  return fetchRepresentative(district)
+    .then((resp) => checkResponse(resp))
+    .then((resp) => resp.json());
+}
+
+function fetchCandidate(candidate) {
   const {
     attributes: { Ref_ID },
   } = candidate;
@@ -33,7 +52,7 @@ export function fetchCandidate(candidate) {
   return fetch(request);
 }
 
-export function fetchRepresentative(district: number) {
+function fetchRepresentative(district: number) {
   const body = { district: `District ${district}` };
   const request = new Request(endpointFor("council"), {
     method: "POST",

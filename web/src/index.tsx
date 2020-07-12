@@ -4,30 +4,7 @@ import { checkResponse, clearElement } from "./utils";
 import buildCityDistrictCard from "./citydistrictcard";
 import buildNPUCard from "./npucard";
 import buildCandidateList from "./candidatelist";
-import {
-  fetchAddressCandidates,
-  fetchCandidate,
-  fetchRepresentative,
-} from "./mapatlapi";
-
-async function searchAddress(address) {
-  return fetchAddressCandidates(address)
-    .then((resp) => checkResponse(resp))
-    .then((resp) => resp.json())
-    .then(({ candidates }) => candidates);
-}
-
-async function getRecord(candidate) {
-  return fetchCandidate(candidate)
-    .then((resp) => checkResponse(resp))
-    .then((resp) => resp.json());
-}
-
-async function getRepresentative(district: number) {
-  return fetchRepresentative(district)
-    .then((resp) => checkResponse(resp))
-    .then((resp) => resp.json());
-}
+import { searchAddress, getRecord, getRepresentative } from "./mapatlapi";
 
 async function getNPU(npu: string) {
   return Promise.resolve(npu);
