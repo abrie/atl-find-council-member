@@ -62,6 +62,8 @@ function showCandidateList(el) {
 }
 
 function run() {
+  document.getElementById("app").classList.remove("hidden");
+
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
   const addressInputElement = document.getElementById(
