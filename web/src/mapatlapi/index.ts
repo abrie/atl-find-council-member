@@ -37,6 +37,13 @@ export async function getRepresentative(district: number) {
     .then((resp) => resp.json());
 }
 
+export async function getDistrictsGeoFeatureCollection() {
+  return fetchDistrictsGeoFeatureCollection()
+    .then((resp) => checkResponse(resp))
+    .then((resp) => resp.json())
+    .then(({ data: { features } }) => features);
+}
+
 function fetchCandidate(candidate) {
   const {
     attributes: { Ref_ID },
@@ -55,6 +62,19 @@ function fetchCandidate(candidate) {
 function fetchRepresentative(district: number) {
   const body = { district: `District ${district}` };
   const request = new Request(endpointFor("council"), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  return fetch(request);
+}
+
+function fetchDistrictsGeoFeatureCollection() {
+  const body = { dataset: "districts" };
+  const request = new Request(endpointFor("geo"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

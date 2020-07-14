@@ -5,6 +5,7 @@ import buildCityDistrictCard from "./citydistrictcard";
 import buildNPUCard from "./npucard";
 import buildCandidateList from "./candidatelist";
 import { searchAddress, getRecord, getRepresentative } from "./mapatlapi";
+import { attachMap } from "./map";
 
 async function getNPU(npu: string) {
   return Promise.resolve(npu);
@@ -63,6 +64,7 @@ function showCandidateList(el) {
 
 function run() {
   document.getElementById("app").classList.remove("hidden");
+  attachMap("map");
 
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
