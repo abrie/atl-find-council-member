@@ -5,16 +5,20 @@
     <meta name="description" content="Atlanta City Council Districts">
     <link rel="stylesheet" type="text/css" href="index.css">
     <title>ATL City Council Districts</title>
-  </head>
+  <link rel="stylesheet" href="css/index.926632f4a5f838c45a17.css"></head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-
     <main class="grid grid-cols-1 max-w-xl mx-auto">
       <header class="p-5 bg-green-300 text-center text-gray-800 text-xl">
         Atlanta City Council Member Finder
       </header>
 
-      <section class="pt-5 pb-1">
+      <noscript>
+        <div class="text-center bg-red-500 text-white">
+          You need to enable JavaScript to run this app.
+        </div>
+      </noscript>
+
+      <section id="app" class="pt-5 pb-1 hidden">
         <div class="p-2 relative mx-auto text-gray-600">
           <input class="w-full border-2 border-gray-400 bg-white h-10 px-5 pl-8 rounded-lg text-lg focus:outline-none" type="search" name="search" id="address-input" placeholder="123 Peachtree St, Atlanta GA">
 
@@ -26,19 +30,24 @@
         </div>
       
 
-      <div style="display: none;" id="map"></div>
 
       <div class="px-10" id="candidates"></div>
       <div class="px-5" id="selected-candidate"></div>
       <div class="px-5" id="selected-npu"></div>
 
+    </section>
+    <section class="px-5">
+      <div class="h-64" id="map"></div>
+    </section>
+
+    <footer>
       <hr>
       <div class="text-sm text-center p-2 text-gray-400">
         <a href="https://github.com/abrie/atl-find-council-member">Source on Github</a>
       </div>
-    </section>
+    </footer>
 
-    <script src="js/index.9ef1fc908e88fc7cf76e.js"></script>
+    <script src="js/index.b4fd5dbc0e272ee1a33b.js"></script>
 
     <!--
       This HTML file is a template.
