@@ -1,39 +1,17 @@
 from bs4 import BeautifulSoup
-import requests
+from fetcher import Fetcher
 import json
 import sys
 import itertools
 
-class Fetcher:
-    def __init__(self):
-        self.use_cached = False
-        self.pages = {}
+URL = "https://citycouncil.atlantaga.gov"
+CACHE = "data/raw-citycouncil.json"
+FINISHED = "data/citycouncil.json"
 
-    def fetch(self, url):
-        if self.use_cached:
-            print("Use cached url:", url)
-            cached = self.pages[url]
-            return cached["text"], cached["status"]
-        else:
-            print("Fetching url:", url)
-            r = requests.get(url)
-            self.pages[url] = {"text":r.text, "status":r.status_code}
-            return r.text, r.status_code
-
-    def use(self, path):
-        with open(path, "r") as f:
-            self.pages = json.loads(f.read())
-            self.use_cached = True
-
-    def save(self, path):
-        with open(path, "w+") as f:
-            f.write(json.dumps(self.pages))
-
-def getAllCouncilMembers():
-    url = "https://citycouncil.atlantaga.gov"
-    text, status_code = fetcher.fetch(url)
+def getAllCouncilMembers(fetcher):
+    text, status_code = fetcher.fetch(URL)
     if status_code != 200:
-        print("Failed to contact", url, r.status_code)
+        print("Failed to contact", URL, r.status_code)
         sys.exit(-1)
 
     soup = BeautifulSoup(text, 'html.parser')
@@ -85,7 +63,7 @@ def extractEmails(p):
         emails = list(dict.fromkeys(emails))
         return emails
 
-def getCouncilMember(href):
+def getCouncilMember(fetcher, href):
     text, status_code = fetcher.fetch(href)
     if status_code != 200:
         return {'href': href, 'error': r.status_code}
@@ -106,12 +84,14 @@ def getCouncilMember(href):
             'contact': contact}
 
 def run():
-    members = [getCouncilMember(href) for href in getAllCouncilMembers()]
+    fetcher = Fetcher()
+    fetcher.use(CACHE) #Use cached data.
+    members = [getCouncilMember(fetcher, href) for href in getAllCouncilMembers(fetcher)]
 
-    with open('data/citycouncil.json', 'w', encoding='utf8') as json_file:
+    fetcher.save(CACHE)
+
+    with open(FINISHED, 'w', encoding='utf8') as json_file:
         json.dump(members, json_file, ensure_ascii=False)
 
-fetcher = Fetcher()
-#fetcher.use("data/html.json")
 run()
-fetcher.save("data/html.json")
+
