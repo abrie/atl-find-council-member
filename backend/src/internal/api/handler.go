@@ -3,6 +3,7 @@ package api
 import (
 	"backend/internal/api/models/address"
 	"backend/internal/api/models/council"
+	"backend/internal/api/models/geo"
 	"backend/internal/api/models/record"
 	"net/http"
 	"path"
@@ -19,6 +20,7 @@ func (store *Store) NewHandler() http.Handler {
 	r.Use(newCorsHandler())
 
 	r.Post("/council", council.NewHandler(path.Join(store.Directory, "citycouncil.json")))
+	r.Post("/geo", geo.NewHandler(path.Join(store.Directory, "geodistricts.json"), path.Join(store.Directory, "geonpus.json")))
 	r.Post("/address", address.NewHandler(store.AddressSubmitter))
 	r.Post("/record", record.NewHandler(store.RecordSubmitter))
 
