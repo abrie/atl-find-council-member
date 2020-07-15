@@ -34,7 +34,8 @@ export async function getRecord(candidate) {
 export async function getRepresentative(district: number) {
   return fetchRepresentative(district)
     .then((resp) => checkResponse(resp))
-    .then((resp) => resp.json());
+    .then((resp) => resp.json())
+    .catch((err) => undefined);
 }
 
 export async function getDistrictsGeoFeatureCollection() {

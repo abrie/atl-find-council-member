@@ -9,7 +9,20 @@ function mailto(str) {
   return `mailto:${str}`;
 }
 
+function emptyDistrictCard() {
+  return (
+    <div className="py-3 flex flex-col">
+      No council member found. The address is probably outside the metropolitan
+      Atlanta area.
+    </div>
+  );
+}
+
 export default function buildCityDistrictCard(representative) {
+  if (!representative) {
+    return emptyDistrictCard();
+  }
+
   return (
     <div className="py-3 flex flex-col">
       <div className="pl-3 bg-green-200 text-xl">
