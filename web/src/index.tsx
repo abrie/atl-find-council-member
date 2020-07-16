@@ -62,9 +62,17 @@ function showCandidateList(el) {
   list.appendChild(el);
 }
 
+async function selectMapDistrict(district) {
+  clearAddressInput();
+  clearCandidateList();
+
+  const representative = await getRepresentative(district);
+  showCityDistrictCard(buildCityDistrictCard(representative));
+}
+
 function run() {
   document.getElementById("app").classList.remove("hidden");
-  attachMap("map");
+  attachMap("map", selectMapDistrict);
 
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
