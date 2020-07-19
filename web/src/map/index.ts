@@ -2,15 +2,40 @@ import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-export function attachMap(
+export async function attachMap(
   elementId: string,
   onDistrictSelected: (district: string) => void
 ) {
+  const districtLayers = {};
   var selectedDistrict = undefined;
-  var selectedLayer = undefined;
+
   const map = L.map(elementId).setView([33.749, -84.388], 10);
 
-  var osm_mapnik = L.tileLayer(
+  function highlightDistrict(name) {
+    districtLayers[name].setStyle({ fillOpacity: 0.5 });
+  }
+
+  function unHighlightDistrict(name) {
+    if (selectedDistrict !== name) {
+      districtLayers[name].setStyle({ fillColor: "#3388ff", fillOpacity: 0 });
+    }
+  }
+
+  function selectDistrict(name) {
+    if (selectedDistrict) {
+      districtLayers[selectedDistrict].setStyle({
+        fillColor: "#3388ff",
+        fillOpacity: 0,
+      });
+    }
+    selectedDistrict = name;
+    districtLayers[selectedDistrict].setStyle({
+      fillColor: "rgb(198, 246, 213)",
+    });
+    onDistrictSelected(name);
+  }
+
+  const osm_mapnik = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
       maxZoom: 19,
@@ -19,24 +44,22 @@ export function attachMap(
     }
   ).addTo(map);
 
-  function mapCityCouncilDistrictFeatures(map, features) {
-    features.forEach((feature) =>
-      L.geoJSON(feature, {
-        style: (f) => ({ opacity: 1, weight: 2, fillOpacity: 0 }),
-        onEachFeature: onEachFeature,
-      }).addTo(map)
-    );
+  function addDistrictFeature(map, feature) {
+    L.geoJSON(feature, {
+      style: (f) => ({ opacity: 1, weight: 2, fillOpacity: 0 }),
+      onEachFeature: onEachFeature,
+    }).addTo(map);
   }
 
   function onEachFeature(feature, layer) {
+    districtLayers[feature.properties.NAME] = layer;
     layer.on({
-      click: (evt) => onDistrictSelected(feature.properties.NAME),
-      mouseover: (evt) => evt.target.setStyle({ fillOpacity: 0.5 }),
-      mouseout: (evt) => evt.target.setStyle({ fillOpacity: 0 }),
+      click: () => selectDistrict(feature.properties.NAME),
+      mouseover: () => highlightDistrict(feature.properties.NAME),
+      mouseout: () => unHighlightDistrict(feature.properties.NAME),
     });
   }
 
-  getDistrictsGeoFeatureCollection().then((features) =>
-    mapCityCouncilDistrictFeatures(map, features)
-  );
+  const features = await getDistrictsGeoFeatureCollection();
+  features.forEach((feature) => addDistrictFeature(map, feature));
 }
