@@ -40,6 +40,9 @@ watch-test: test
 start: kill build
 	@$(BIN_DIR)/$(SERVER_BIN_NAME) -d $(DATA_DIR) & echo $$! > $(PID)
 
+start-mock: kill build
+	@$(BIN_DIR)/$(SERVER_BIN_NAME) -d $(DATA_DIR) -t & echo $$! > $(PID)
+
 restart: notify start
 
 notify:
