@@ -21,18 +21,23 @@ export async function attachMap(
     }
   }
 
-  function selectDistrict(name) {
+  function pickDistrict(name, callback) {
     if (selectedDistrict) {
       districtLayers[selectedDistrict].setStyle({
         fillColor: "#3388ff",
         fillOpacity: 0,
       });
     }
+
     selectedDistrict = name;
     districtLayers[selectedDistrict].setStyle({
+      fillOpacity: 0.5,
       fillColor: "rgb(198, 246, 213)",
     });
-    onDistrictSelected(name);
+
+    if (callback) {
+      callback(name);
+    }
   }
 
   const osm_mapnik = L.tileLayer(
@@ -54,7 +59,7 @@ export async function attachMap(
   function onEachFeature(feature, layer) {
     districtLayers[feature.properties.NAME] = layer;
     layer.on({
-      click: () => selectDistrict(feature.properties.NAME),
+      click: () => pickDistrict(feature.properties.NAME, onDistrictSelected),
       mouseover: () => highlightDistrict(feature.properties.NAME),
       mouseout: () => unHighlightDistrict(feature.properties.NAME),
     });
@@ -62,4 +67,6 @@ export async function attachMap(
 
   const features = await getDistrictsGeoFeatureCollection();
   features.forEach((feature) => addDistrictFeature(map, feature));
+
+  return { pickDistrict };
 }

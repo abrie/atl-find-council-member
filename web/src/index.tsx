@@ -7,6 +7,8 @@ import buildCandidateList from "./candidatelist";
 import { searchAddress, getRecord, getRepresentative } from "./mapatlapi";
 import { attachMap } from "./map";
 
+var selectDistrict = undefined;
+
 async function getNPU(npu: string) {
   return Promise.resolve(npu);
 }
@@ -33,11 +35,15 @@ function showNPUCard(card) {
   el.appendChild(card);
 }
 
-async function selectCandidate(candidate) {
+async function selectCandidate(candidate, selectMapDistrict) {
   const [record] = await getRecord(candidate);
 
   clearAddressInput();
   clearCandidateList();
+
+  if (selectMapDistrict) {
+    selectMapDistrict(record.COUNCIL_DIST);
+  }
 
   const representative = await getRepresentative(record.COUNCIL_DIST);
   showCityDistrictCard(buildCityDistrictCard(representative));
@@ -70,9 +76,9 @@ async function selectMapDistrict(district) {
   showCityDistrictCard(buildCityDistrictCard(representative));
 }
 
-function run() {
+async function run() {
   document.getElementById("app").classList.remove("hidden");
-  attachMap("map", selectMapDistrict);
+  const { pickDistrict } = await attachMap("map", selectMapDistrict);
 
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
@@ -89,7 +95,7 @@ function run() {
 
     showCandidateList(
       buildCandidateList(value, candidates, (candidate) =>
-        selectCandidate(candidate)
+        selectCandidate(candidate, pickDistrict)
       )
     );
   });
