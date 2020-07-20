@@ -21,7 +21,7 @@ export async function attachMap(
     }
   }
 
-  function pickDistrict(name, callback) {
+  function pickDistrictFeature(name, callback) {
     if (selectedDistrict) {
       districtLayers[selectedDistrict].setStyle({
         fillColor: "#3388ff",
@@ -59,7 +59,8 @@ export async function attachMap(
   function onEachFeature(feature, layer) {
     districtLayers[feature.properties.NAME] = layer;
     layer.on({
-      click: () => pickDistrict(feature.properties.NAME, onDistrictSelected),
+      click: () =>
+        pickDistrictFeature(feature.properties.NAME, onDistrictSelected),
       mouseover: () => highlightDistrict(feature.properties.NAME),
       mouseout: () => unHighlightDistrict(feature.properties.NAME),
     });
@@ -68,5 +69,5 @@ export async function attachMap(
   const features = await getDistrictsGeoFeatureCollection();
   features.forEach((feature) => addDistrictFeature(map, feature));
 
-  return { pickDistrict };
+  return { pickDistrictFeature };
 }

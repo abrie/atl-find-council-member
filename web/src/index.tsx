@@ -78,7 +78,7 @@ async function selectMapDistrict(district) {
 
 async function run() {
   document.getElementById("app").classList.remove("hidden");
-  const { pickDistrict } = await attachMap("map", selectMapDistrict);
+  const { pickDistrictFeature } = await attachMap("map", selectMapDistrict);
 
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
@@ -95,7 +95,7 @@ async function run() {
 
     showCandidateList(
       buildCandidateList(value, candidates, (candidate) =>
-        selectCandidate(candidate, pickDistrict)
+        selectCandidate(candidate, pickDistrictFeature)
       )
     );
   });
