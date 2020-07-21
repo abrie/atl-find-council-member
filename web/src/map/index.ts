@@ -1,4 +1,5 @@
 import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
+import { Stadia_AlidadeSmooth } from "./provider";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -40,18 +41,14 @@ export async function attachMap(
     }
   }
 
-  const osm_mapnik = L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution:
-        '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }
-  ).addTo(map);
+  const tileLayer = L.tileLayer(Stadia_AlidadeSmooth.url, {
+    maxZoom: 19,
+    attribution: Stadia_AlidadeSmooth.attribution,
+  }).addTo(map);
 
   function addDistrictFeature(map, feature) {
     L.geoJSON(feature, {
-      style: (f) => ({ opacity: 1, weight: 2, fillOpacity: 0 }),
+      style: (f) => ({ opacity: 1, weight: 1, fillOpacity: 0 }),
       onEachFeature: onEachFeature,
     }).addTo(map);
   }
