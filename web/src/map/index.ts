@@ -1,5 +1,5 @@
 import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
-import { Stadia_AlidadeSmooth } from "./provider";
+import TileProvider from "./provider";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -41,9 +41,9 @@ export async function attachMap(
     }
   }
 
-  const tileLayer = L.tileLayer(Stadia_AlidadeSmooth.url, {
-    maxZoom: 19,
-    attribution: Stadia_AlidadeSmooth.attribution,
+  const tileLayer = L.tileLayer(TileProvider.url, {
+    maxZoom: TileProvider.maxZoom,
+    attribution: TileProvider.attribution,
   }).addTo(map);
 
   function addDistrictFeature(map, feature) {
