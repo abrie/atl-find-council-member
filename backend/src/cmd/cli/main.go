@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/api/models/address"
+	"backend/internal/api/models/censusgeocoder"
 	"backend/internal/api/models/record"
 
 	"log"
@@ -10,6 +11,20 @@ import (
 
 func main() {
 	query := os.Args[1]
+	searchUsingCensusGeocoder(query)
+}
+
+func searchUsingCensusGeocoder(query string) {
+	geocoderSubmitter := censusgeocoder.ProductionSubmitter{}
+	geocoderResult, err := geocoderSubmitter.Submit(&censusgeocoder.Request{censusgeocoder.Address{Street: query, City: "Atlanta", State: "GA"}})
+	if err != nil {
+		log.Fatalf("%v", err)
+	}
+	log.Printf("%v\n", geocoderResult)
+
+}
+
+func searchUsingMapatlapi(query string) {
 	addressSubmitter := address.TestSubmitter{}
 	addressResult, err := addressSubmitter.Submit(&address.Request{Address: query})
 	if err != nil {
