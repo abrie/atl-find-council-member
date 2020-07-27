@@ -1,0 +1,11 @@
+/* @preserve
+   * Leaflet 1.6.0, a JS library for interactive maps. http://leafletjs.com
+   * (c) 2010-2019 Vladimir Agafonkin, (c) 2010-2011 CloudMade
+   */
+
+/*!
+ * Cross-Browser Split 1.1.1
+ * Copyright 2007-2012 Steven Levithan <stevenlevithan.com>
+ * Available under the MIT License
+ * ECMAScript compliant, uniform cross-browser split method
+ */
