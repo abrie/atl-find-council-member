@@ -4,7 +4,7 @@ import { checkResponse, clearElement } from "./utils";
 import buildCityDistrictCard from "./citydistrictcard";
 import buildNPUCard from "./npucard";
 import buildCandidateList from "./candidatelist";
-import { getRecord, getRepresentative } from "./mapatlapi";
+import { getRepresentative } from "./mapatlapi";
 import { searchAddress } from "./geocoder";
 import { attachMap } from "./map";
 
@@ -36,21 +36,25 @@ function showNPUCard(card) {
   el.appendChild(card);
 }
 
-async function selectCandidate(candidate, selectMapDistrict) {
-  const [record] = await getRecord(candidate);
-
+async function selectCandidate(candidate, pickDistrictFeatureByCoordinates) {
   clearAddressInput();
   clearCandidateList();
 
-  if (selectMapDistrict) {
-    selectMapDistrict(record.COUNCIL_DIST);
-  }
+  const features = pickDistrictFeatureByCoordinates(candidate.coordinates);
 
-  const representative = await getRepresentative(record.COUNCIL_DIST);
-  showCityDistrictCard(buildCityDistrictCard(representative));
+  const districts = features.map(({ properties: { NAME: name } }) => name);
 
-  const npu = await getNPU(record.NPU_NAME);
-  showNPUCard(buildNPUCard(npu));
+  const districtCards = await Promise.all(
+    districts.map(async (district) =>
+      buildCityDistrictCard(await getRepresentative(district))
+    )
+  );
+
+  console.log(districtCards);
+  districtCards.forEach((card) => showCityDistrictCard(card));
+
+  //const npu = await getNPU(record.NPU_NAME);
+  //showNPUCard(buildNPUCard(npu));
 }
 
 function clearSelectedCandidate() {
@@ -79,7 +83,10 @@ async function selectMapDistrict(district) {
 
 async function run() {
   document.getElementById("app").classList.remove("hidden");
-  const { pickDistrictFeature } = await attachMap("map", selectMapDistrict);
+  const {
+    pickDistrictFeatureByName,
+    pickDistrictFeatureByCoordinates,
+  } = await attachMap("map", selectMapDistrict);
 
   const debouncedSearchAddress = debounce(searchAddress, 250);
 
@@ -100,7 +107,7 @@ async function run() {
 
     showCandidateList(
       buildCandidateList(value, result.addressMatches, (candidate) =>
-        selectCandidate(candidate, pickDistrictFeature)
+        selectCandidate(candidate, pickDistrictFeatureByCoordinates)
       )
     );
   });

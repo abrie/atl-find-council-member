@@ -2,6 +2,7 @@ import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
 import TileProvider from "./provider";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import * as turf from "@turf/turf";
 
 export async function attachMap(
   elementId: string,
@@ -22,7 +23,18 @@ export async function attachMap(
     }
   }
 
-  function pickDistrictFeature(name, callback) {
+  function pickDistrictFeatureByCoordinates(coordinates, callback) {
+    const point = turf.point([coordinates.x, coordinates.y]);
+    const features = Object.values(districtLayers).map(
+      ({ feature }) => feature
+    );
+
+    return features.filter((feature) =>
+      turf.booleanPointInPolygon(point, feature)
+    );
+  }
+
+  function pickDistrictFeatureByName(name, callback) {
     if (selectedDistrict) {
       districtLayers[selectedDistrict].setStyle({
         fillColor: "#3388ff",
@@ -57,7 +69,7 @@ export async function attachMap(
     districtLayers[feature.properties.NAME] = layer;
     layer.on({
       click: () =>
-        pickDistrictFeature(feature.properties.NAME, onDistrictSelected),
+        pickDistrictFeatureByName(feature.properties.NAME, onDistrictSelected),
       mouseover: () => highlightDistrict(feature.properties.NAME),
       mouseout: () => unHighlightDistrict(feature.properties.NAME),
     });
@@ -66,5 +78,5 @@ export async function attachMap(
   const features = await getDistrictsGeoFeatureCollection();
   features.forEach((feature) => addDistrictFeature(map, feature));
 
-  return { pickDistrictFeature };
+  return { pickDistrictFeatureByName, pickDistrictFeatureByCoordinates };
 }

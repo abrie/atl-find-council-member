@@ -8,6 +8,7 @@
     "deploy": "yarn build && sed -i '' -f deploy.sed build/index.html && yarn postcss static/index.css > build/index.css && yarn gh-pages -d build"
   },
   "dependencies": {
+    "@turf/turf": "^5.1.6",
     "awesome-debounce-promise": "^2.1.0",
     "leaflet": "^1.6.0",
     "tailwindcss": "^1.4.6"
