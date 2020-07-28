@@ -8,7 +8,7 @@ export default function buildCandidateList(address, candidates, callback) {
           className="cursor-pointer truncate text-gray-600 hover:text-black"
           onclick={() => callback(candidate)}
         >
-          {candidate.address}
+          {candidate.matchedAddress}
         </div>
       ))}
     </div>

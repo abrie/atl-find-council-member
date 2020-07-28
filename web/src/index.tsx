@@ -4,7 +4,8 @@ import { checkResponse, clearElement } from "./utils";
 import buildCityDistrictCard from "./citydistrictcard";
 import buildNPUCard from "./npucard";
 import buildCandidateList from "./candidatelist";
-import { searchAddress, getRecord, getRepresentative } from "./mapatlapi";
+import { getRecord, getRepresentative } from "./mapatlapi";
+import { searchAddress } from "./geocoder";
 import { attachMap } from "./map";
 
 var selectDistrict = undefined;
@@ -91,10 +92,14 @@ async function run() {
     clearSelectedNPU();
 
     const { value } = evt.currentTarget as HTMLInputElement;
-    const candidates = await debouncedSearchAddress(value);
+    const result = await debouncedSearchAddress({
+      street: value,
+      city: "atlanta",
+      state: "ga",
+    });
 
     showCandidateList(
-      buildCandidateList(value, candidates, (candidate) =>
+      buildCandidateList(value, result.addressMatches, (candidate) =>
         selectCandidate(candidate, pickDistrictFeature)
       )
     );
