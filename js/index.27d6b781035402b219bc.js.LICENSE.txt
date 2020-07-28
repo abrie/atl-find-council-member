@@ -17,10 +17,3 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
-
-/**
- * @license GNU Affero General Public License.
- * Copyright (c) 2015, 2015 Ronny Lorenz <ronny@tbi.univie.ac.at>
- * v. 1.2.0
- * https://github.com/RaumZeit/MarchingSquares.js
- */
