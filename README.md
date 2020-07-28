@@ -6,9 +6,10 @@ An app to quickly find an Atlanta city council representative.
 
 ## Technical Overview
 
-This app multiplexes two official Atlanta government sites into one:
+This app multiplexes several federal and Atlanta government sites into one.
 
 - [egis.atlantaga.gov](http://egis.atlantaga.gov/app/home/index.html) to find a district by street address.
+- [geocoding.geo.census.gov](https://geocoding.geo.census.gov/) to get long/lat coordinates for a street address.
 - [citycouncil.atlantaga.gov](https://citycouncil.atlantaga.gov/council-members) for information about council members such as full name, photo, and contact info.
 
 ## Technical Details
@@ -17,7 +18,7 @@ There are three components:
 
 - [/web](web), javascript web interface.
 - [/scraper](scraper), gleans information from the city council web site.
-- [/backend](backend), wraps the the Egis API and serves scraped council data.
+- [/backend](backend), provides the Geocoding API and serves scraped council data.
 
 ## For Developers
 
