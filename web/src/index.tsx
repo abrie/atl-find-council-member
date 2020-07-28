@@ -40,9 +40,7 @@ async function selectCandidate(candidate, pickDistrictFeatureByCoordinates) {
   clearAddressInput();
   clearCandidateList();
 
-  const features = pickDistrictFeatureByCoordinates(candidate.coordinates);
-
-  const districts = features.map(({ properties: { NAME: name } }) => name);
+  const districts = pickDistrictFeatureByCoordinates(candidate.coordinates);
 
   const districtCards = await Promise.all(
     districts.map(async (district) =>
@@ -50,7 +48,6 @@ async function selectCandidate(candidate, pickDistrictFeatureByCoordinates) {
     )
   );
 
-  console.log(districtCards);
   districtCards.forEach((card) => showCityDistrictCard(card));
 
   //const npu = await getNPU(record.NPU_NAME);

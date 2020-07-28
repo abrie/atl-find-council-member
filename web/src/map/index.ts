@@ -2,7 +2,7 @@ import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
 import TileProvider from "./provider";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import * as turf from "@turf/turf";
+import { booleanPointInPolygon, point } from "@turf/turf";
 
 export async function attachMap(
   elementId: string,
@@ -23,18 +23,7 @@ export async function attachMap(
     }
   }
 
-  function pickDistrictFeatureByCoordinates(coordinates, callback) {
-    const point = turf.point([coordinates.x, coordinates.y]);
-    const features = Object.values(districtLayers).map(
-      ({ feature }) => feature
-    );
-
-    return features.filter((feature) =>
-      turf.booleanPointInPolygon(point, feature)
-    );
-  }
-
-  function pickDistrictFeatureByName(name, callback) {
+  function selectDistrict(name) {
     if (selectedDistrict) {
       districtLayers[selectedDistrict].setStyle({
         fillColor: "#3388ff",
@@ -47,6 +36,23 @@ export async function attachMap(
       fillOpacity: 0.5,
       fillColor: "rgb(198, 246, 213)",
     });
+  }
+
+  function pickDistrictFeatureByCoordinates(coordinates, callback) {
+    const pt = point([coordinates.x, coordinates.y]);
+    const features = Object.values(districtLayers).map(
+      ({ feature }) => feature
+    );
+
+    const names = features
+      .filter((feature) => booleanPointInPolygon(pt, feature))
+      .map(({ properties: { NAME } }) => NAME);
+    names.forEach((name) => pickDistrictFeatureByName(name, callback));
+    return names;
+  }
+
+  function pickDistrictFeatureByName(name, callback) {
+    selectDistrict(name);
 
     if (callback) {
       callback(name);
