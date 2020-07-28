@@ -2,6 +2,7 @@ package api
 
 import (
 	"backend/internal/api/models/address"
+	"backend/internal/api/models/censusgeocoder"
 	"backend/internal/api/models/council"
 	"backend/internal/api/models/geo"
 	"backend/internal/api/models/record"
@@ -21,6 +22,7 @@ func (store *Store) NewHandler() http.Handler {
 
 	r.Post("/council", council.NewHandler(path.Join(store.Directory, "citycouncil.json")))
 	r.Post("/geo", geo.NewHandler(path.Join(store.Directory, "geodistricts.json"), path.Join(store.Directory, "geonpus.json")))
+	r.Post("/geocoder", censusgeocoder.NewHandler(store.GeocoderSubmitter))
 	r.Post("/address", address.NewHandler(store.AddressSubmitter))
 	r.Post("/record", record.NewHandler(store.RecordSubmitter))
 

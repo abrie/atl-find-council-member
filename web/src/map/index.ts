@@ -1,7 +1,8 @@
 import { getDistrictsGeoFeatureCollection } from "../mapatlapi";
-import { Stadia_AlidadeSmooth } from "./provider";
+import TileProvider from "./provider";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { booleanPointInPolygon, point } from "@turf/turf";
 
 export async function attachMap(
   elementId: string,
@@ -22,7 +23,7 @@ export async function attachMap(
     }
   }
 
-  function pickDistrictFeature(name, callback) {
+  function selectDistrict(name) {
     if (selectedDistrict) {
       districtLayers[selectedDistrict].setStyle({
         fillColor: "#3388ff",
@@ -35,15 +36,32 @@ export async function attachMap(
       fillOpacity: 0.5,
       fillColor: "rgb(198, 246, 213)",
     });
+  }
+
+  function pickDistrictFeatureByCoordinates(coordinates, callback) {
+    const pt = point([coordinates.x, coordinates.y]);
+    const features = Object.values(districtLayers).map(
+      ({ feature }) => feature
+    );
+
+    const names = features
+      .filter((feature) => booleanPointInPolygon(pt, feature))
+      .map(({ properties: { NAME } }) => NAME);
+    names.forEach((name) => pickDistrictFeatureByName(name, callback));
+    return names;
+  }
+
+  function pickDistrictFeatureByName(name, callback) {
+    selectDistrict(name);
 
     if (callback) {
       callback(name);
     }
   }
 
-  const tileLayer = L.tileLayer(Stadia_AlidadeSmooth.url, {
-    maxZoom: 19,
-    attribution: Stadia_AlidadeSmooth.attribution,
+  const tileLayer = L.tileLayer(TileProvider.url, {
+    maxZoom: TileProvider.maxZoom,
+    attribution: TileProvider.attribution,
   }).addTo(map);
 
   function addDistrictFeature(map, feature) {
@@ -57,7 +75,7 @@ export async function attachMap(
     districtLayers[feature.properties.NAME] = layer;
     layer.on({
       click: () =>
-        pickDistrictFeature(feature.properties.NAME, onDistrictSelected),
+        pickDistrictFeatureByName(feature.properties.NAME, onDistrictSelected),
       mouseover: () => highlightDistrict(feature.properties.NAME),
       mouseout: () => unHighlightDistrict(feature.properties.NAME),
     });
@@ -66,5 +84,5 @@ export async function attachMap(
   const features = await getDistrictsGeoFeatureCollection();
   features.forEach((feature) => addDistrictFeature(map, feature));
 
-  return { pickDistrictFeature };
+  return { pickDistrictFeatureByName, pickDistrictFeatureByCoordinates };
 }
