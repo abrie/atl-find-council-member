@@ -9,8 +9,9 @@ An app to quickly find an Atlanta city council representative.
 This app works by multiplexing a few commercial, federal and local Atlanta government sites into one.
 
 - [egis.atlantaga.gov](http://egis.atlantaga.gov/app/home/index.html) to find a district by street address.
-- [citycouncil.atlantaga.gov](https://citycouncil.atlantaga.gov/council-members) for information about council members such as full name, photo, and contact info. -[dcp-coaplangis.opendata.arcgis.com](dcp-coaplangis.opendata.arcgis.com/datasets/city-council-districts/datasets/city-council-districts) for city council district boundries.
-- [geocoding.geo.census.gov](https://geocoding.geo.census.gov/) to get long/lat coordinates for a street address.
+- [citycouncil.atlantaga.gov](https://citycouncil.atlantaga.gov/council-members) for information about council members such as full name, photo, and contact info.
+- [dcp-coaplangis.opendata.arcgis.com](dcp-coaplangis.opendata.arcgis.com/datasets/city-council-districts/datasets/city-council-districts) for city council district boundries.
+- [geocoding.geo.census.gov](https://geocoding.geo.census.gov/) to get geospatial coordinates for a street address.
 
 ## Technical Details
 
