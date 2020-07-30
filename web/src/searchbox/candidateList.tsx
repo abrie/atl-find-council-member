@@ -1,6 +1,11 @@
 import h from "hyperscript";
+import type { AddressMatch } from "../geocoder";
 
-export default function buildCandidateList(address, candidates, callback) {
+export default function buildCandidateList(
+  address,
+  candidates: AddressMatch[],
+  callback: (AddressMatch) => void
+) {
   return (
     <div>
       {candidates.map((candidate) => (
