@@ -23,6 +23,7 @@ function buildElement(onInput: (string) => void) {
 }
 
 export default function (
+  target: string,
   searchFunc: SearchFunc,
   pickFunc: (AddressMatch) => void
 ) {
@@ -36,10 +37,13 @@ export default function (
   };
 
   const el = buildElement((street) => runSearch(street));
+
   const clear = () => {
     el.querySelector("input").value = "";
     el.querySelector(".results").innerHTML = "";
   };
 
-  return { el, clear };
+  document.getElementById(target).appendChild(el);
+
+  return { clear };
 }

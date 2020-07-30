@@ -52,12 +52,8 @@ async function selectMapDistrict(district) {
 }
 
 async function run() {
-  const map = await attachMap("map", (district) => {
-    searchBox.clear();
-    selectMapDistrict(district);
-  });
-
   const searchBox = newSearchBox(
+    "searchbox",
     debounce(searchAddress, 250),
     (candidate: MatchedAddress) => {
       selectCandidate(candidate, map.pickDistrictFeatureByCoordinates);
@@ -65,8 +61,10 @@ async function run() {
     }
   );
 
-  document.getElementById("app").prepend(searchBox.el);
-  document.getElementById("app").classList.remove("hidden");
+  const map = await attachMap("map", (district) => {
+    searchBox.clear();
+    selectMapDistrict(district);
+  });
 }
 
 run();
