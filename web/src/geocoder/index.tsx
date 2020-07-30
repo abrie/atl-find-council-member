@@ -19,11 +19,35 @@ async function fetchAddressCandidates(address) {
 }
 
 function logAndReturn(obj) {
-  //console.log(obj);
   return obj;
 }
 
-export async function searchAddress(address) {
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+}
+
+export type MatchedAddress = string;
+
+export interface Coordinates {
+  x: number;
+  y: number;
+}
+
+export interface AddressMatch {
+  matchedAddress: MatchedAddress;
+  coordinatess: Coordinates;
+}
+
+export type SearchFunc = (Address) => Promise<SearchResult>;
+
+export interface SearchResult {
+  addressMatches: AddressMatch[];
+  error: string | null;
+}
+
+export async function searchAddress(address: Address): Promise<SearchResult> {
   return fetchAddressCandidates(address)
     .then((resp) => checkResponse(resp))
     .then((resp) => resp.json())
