@@ -4,20 +4,20 @@ import type { SearchFunc, AddressMatch } from "../geocoder";
 
 function buildElement(onInput: (string) => void) {
   return (
-    <div className="relative mx-auto text-gray-600">
+    <div className="relative px-2 mx-auto text-gray-600">
       <input
         className="w-full border-2 border-gray-400 bg-white h-10 px-5 pl-8 rounded-lg text-lg focus:outline-none"
         type="search"
         name="search"
         oninput={(evt) => onInput(evt.target.value)}
-        placeholder="123 Peachtree St, or click on the map."
+        placeholder="Search by street address, or click on the map."
       />
 
-      <button className="absolute left-0 top-0 mt-2 ml-2" type="submit">
+      <button className="absolute left-0 top-0 mt-2 ml-5" type="submit">
         &#128269;
       </button>
 
-      <div className="results w-full"></div>
+      <div className="results ml-10 mb-3 w-full"></div>
     </div>
   );
 }
